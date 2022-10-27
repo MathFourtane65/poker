@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" href="favicon.ico" />
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/socket.io-client@4.4.1/dist/socket.io.min.js"></script>
+</head>
+
+<body>
+    <div id="game"></div>
+    <script>
+
+        const phaserConfig = {
+            type: Phaser.AUTO,
+            parent: "game",
+            width: 1000,
+            height: 500,
+            dom: {
+                createContainer: true
+            },
+
+            scene: {
+                init: initScene,
+                preload: preloadScene,
+                create: createScene,
+                update: updateScene
+            }
+        };
+
+        const game = new Phaser.Game(phaserConfig);
+
+        function initScene() { }
+
+        function preloadScene() {
+            this.load.html("form", "form.html");
+            this.load.image("fond", "fond.png");
+            this.load.image("table", "tableV2.png");
+
+
+        }
+
+        function createScene() {
+            const socket = io("localhost:3000");
+
+
+            socket.on("connexion",() => {
+                console.log("connecté !!");
+            });
+
+            socket.on("distribution",() => {
+                console.log("Distribution des cartes aux joueurs");
+                // to do 
+            })
+
+            
+            this.add.image(500, 250, "fond");
+            this.add.image(500, 250, "table");
+            let nomJoueur;
+            this.nameInput = this.add.dom(500, 250).createFromCache("form");
+            let name = this.nameInput.getChildByName("name");
+            btn = document.getElementById("btn");
+            form = document.getElementById("input-form");
+            btn.addEventListener('click', function () {
+                form.style.display = 'none';
+                nomJoueur = name.value;
+                console.log(nomJoueur);
+            });
+
+        
+            
+            
+            
+
+
+
+
+
+
+
+        }
+
+        function updateScene() { }
+
+    </script>
+</body>
+
+</html>
