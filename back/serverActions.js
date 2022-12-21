@@ -25,7 +25,9 @@ let onConnect = (socket) => {
 
     // console.log("game", game, game.players.length);
     const readyPlayers = seats.filter((s) => s != undefined)
-    if (readyPlayers.length > 1) {
+    console.log("JOUEURS PRETS : ", readyPlayers.length);
+    // demarrage partie si il y a au moins 2 joueurs
+    if (readyPlayers.length > 1 ) {
       if (!game || !game.started) {
         console.log("deal...");
         game = createGame(readyPlayers)
