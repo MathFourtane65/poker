@@ -40,8 +40,8 @@ function createServer(scene) {
     server.on("bet", ({ seat, amount }) => {
         console.log(seat, "mise", amount);
     })
-    server.on("fold", (seat) => {
-        console.log(seat, "fold");
+    server.on("secoucher", (seat) => {
+        console.log(seat, "se couche");
     });
     server.on("active", (data) => {
         scene.afficherBoutons()
@@ -60,6 +60,21 @@ function createServer(scene) {
         else{
             scene.dealClosedCards(data.seat)
         }
+    })
+    server.on("winners", (data) => {
+        console.log("winners", data);
+        if (data.map((w)=>w.seat).includes(scene.player.seat)) {
+            console.log("gagné!");
+        }
+        else {
+            console.log("perdu!");
+        }
+    })
+    server.on("game-over", (data) => {
+        server.emit("show", scene.player.seat)
+    })
+    server.on("show", (data) => {
+        scene.showCards(data.seat,data.cards)
     })
     return server
 }

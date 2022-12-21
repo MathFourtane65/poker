@@ -4,6 +4,12 @@ function createGame(players) {
     return { started: false, players, deck: buildDeck(), currentPlayer: null, dealer: null }
 }
 
+function getNextPlayer(game) {
+    let curIdx = game.players.indexOf(game.currentPlayer)
+    let nextIdx = (curIdx + 1) % game.players.length
+    return game.players[nextIdx]
+}
+
 const listFreeSeats = (seats) => {
     // console.log(game.players, game.players[0]);
     let freeSeats = seats.filter((s) => s == undefined).map((s, i) => i + 1)
@@ -26,48 +32,67 @@ function removePlayer(game, seat) {
     game.players.find((p)=>p.seat===seat).cards = null;
 }
 
-// function updateStack(game, seat, amount) {
-//     game.players[seat - 1].stack -= amount;
-//     game.players[seat - 1].bet += amount;
-// }
-
 function updateStack(player, amount) {
     player.stack -= amount;
    player.bet += amount;
 }
 
+
 function startGame(game) {
     console.log("start...");
+    game.dealer = game.players[Math.random() * game.players.length]
+    // game.players.some((p) => p != undefined)
+    // game.dealer = newPlayer
+    game.currentPlayer = game.dealer
+    game.currentPlayer = getNextPlayer(game)
+    console.log(game.currentPlayer.name);
+
+    console.log("current", game.currentPlayer.name);
+    game.currentPlayer = getNextPlayer(game)
+    console.log("current", game.currentPlayer.name);
     game.started = true;
 }
 
 function dealAllPocketCards(game) {
     for (let player of game.players) {
-        if (player != undefined) {
-            console.log("deal", player.name);
+        // if (player != undefined) {
+        console.log("deal", player.name);
+        dealFlop(game)
+        broadcast(game, "flop",game.flop);
+
             dealPocketCards(game, player);
-            player.socket.emit("deal", { seat: player.seat, cards:player.cards });
+            player.socket.emit("deal", { seat: player.seat, cards: player.cards });
             broadcast(game, "deal", { seat: player.seat }, player.seat);
-        }
+        // }
     }
 }
 
 
 function dealPocketCards(game, player) {
     let cards = [game.deck.pop(), game.deck.pop()];
-    game.players[player.seat - 1].cards = cards;
-    return cards;
+    game.players.find((p)=>p.seat===player.seat).cards = cards;
+}
+function dealFlop(game) {
+    let flop = [game.deck.pop(), game.deck.pop(), game.deck.pop()];
+    game.flop = flop;
 }
 
 
 function broadcast(game, event, data, exceptSeat) {
     for (let player of game.players) {
-        if (player != undefined && player.seat != exceptSeat) {
+        if (player.seat != exceptSeat) {
             // console.log("broadcast:", player);
-            game.players[player.seat - 1].socket.emit(event, data);
+            player.socket.emit(event, data);
         }
     }
 }
 
+function roundIsOver(game) {
+    let bets = game.players.map((p) => p.bet)
+    let max = Math.max(...bets)
+    console.log(bets,max);
+    return bets.every((b) => b === max)
+}
 
-export { createGame, listSeats, addNewPlayer, removePlayer, updateStack, startGame, broadcast,dealAllPocketCards }
+
+export { createGame, listFreeSeats, removePlayer, updateStack, startGame, broadcast, dealAllPocketCards, getNextPlayer, roundIsOver }

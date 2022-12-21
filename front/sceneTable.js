@@ -61,7 +61,7 @@ class PokerTable extends Phaser.Scene {
         this.boutonMiser.setInteractive({ useHandCursor: true });
         this.boutonMiser.on('pointerdown', () => {
             console.log('mise...');
-            this.server.emit("miser", { seat: this.player.seat, amount: 100 });
+            this.server.emit("bet", { seat: this.player.seat, amount: 100 });
             this.cacherBoutons();
         });
         this.boutonSeCoucher = this.add.text(-100, -100, 'Se coucher', { fontSize: '32px', backgroundColor: '#87cefa', color: '#000' });
@@ -139,8 +139,8 @@ class PokerTable extends Phaser.Scene {
         let idx = (suitIdx * 13) + rankIdx
         let sprite = this.add.sprite(- cardParams.width * scale, this.game.config.height / 2, "cards", idx);
 
-        sprite.x = 200;
-        sprite.y = 200;
+        sprite.x = 500;
+        sprite.y = 260;
         sprite.setScale(scale);
         return sprite;
     }
@@ -216,15 +216,15 @@ class PokerTable extends Phaser.Scene {
     dealFlop(flop) {
         let scale = cardParams.opponentScale
         let card1 = this.createCard(flop[0], scale)
-        this.flop[0].cardsSprite = card1
-        this.dealCard(card1, this.flop[0].x, this.flop[0].y, () => {
+        this.commonCards[0].cardsSprite = card1
+        this.dealCard(card1, this.commonCards[0].x, this.commonCards[0].y, () => {
 
             let card2 = this.createCard(flop[1], scale)
-            this.flop[1].cardsSprite = card2
-            this.dealCard(card2, this.flop[1].x, this.flop[1].y, () => {
+            this.commonCards[1].cardsSprite = card2
+            this.dealCard(card2, this.commonCards[1].x, this.commonCards[1].y, () => {
                 let card3 = this.createCard(flop[2], scale)
-                this.flop[2].cardsSprite = card3
-                this.dealCard(card3, this.flop[2].x, this.flop[2].y)
+                this.commonCards[2].cardsSprite = card3
+                this.dealCard(card3, this.commonCards[2].x, this.commonCards[2].y)
 
             })
         })
