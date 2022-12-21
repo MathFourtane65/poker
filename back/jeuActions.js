@@ -1,31 +1,39 @@
 import { buildDeck } from "./cards.js";
 
 function createGame(players) {
-    return { started: false, players, deck: buildDeck() }
-}
-const listSeats = (game) => {
-    // console.log(game.players, game.players[0]);
-    let seats = game.players.filter((p) => p == undefined).map((p, i) => i + 1)
-    console.log(seats);
-    return seats
+    return { started: false, players, deck: buildDeck(), currentPlayer: null, dealer: null }
 }
 
-const addNewPlayer = (game, newPlayer) => {
-    // console.log(newPlayer);
-    console.log("player", newPlayer.name, "ready");
-    game.players[newPlayer.seat - 1] = newPlayer
-    // freeSeats.splice(freeSeats.indexOf(newPlayer.seat),1)
-    console.log("players", game.players);
+const listFreeSeats = (seats) => {
+    // console.log(game.players, game.players[0]);
+    let freeSeats = seats.filter((s) => s == undefined).map((s, i) => i + 1)
+    // console.log(seats);
+    return freeSeats
 }
+
+// const addNewPlayer = (game, newPlayer) => {
+//     // console.log(newPlayer);
+//     console.log("player", newPlayer.name, "ready");
+//     game.players.push(newPlayer)
+//     // freeSeats.splice(freeSeats.indexOf(newPlayer.seat),1)
+//     console.log("players", game.players);
+// }
+
 
 
 function removePlayer(game, seat) {
-    game.players[seat - 1].cards = null;
+    //game.players[seat - 1].cards = null;
+    game.players.find((p)=>p.seat===seat).cards = null;
 }
 
-function updateStack(game, seat, amount) {
-    game.players[seat - 1].stack -= amount;
-    game.players[seat - 1].bet += amount;
+// function updateStack(game, seat, amount) {
+//     game.players[seat - 1].stack -= amount;
+//     game.players[seat - 1].bet += amount;
+// }
+
+function updateStack(player, amount) {
+    player.stack -= amount;
+   player.bet += amount;
 }
 
 function startGame(game) {

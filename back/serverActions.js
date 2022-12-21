@@ -7,19 +7,19 @@ let onConnect = (socket) => {
 
   socket.on("listSeats", () => {
     let seats = listSeats(game)
-    console.log(seats);
+    //console.log(seats);
     socket.emit("listSeats", seats)
   })
   socket.on("join", (newPlayer) => {
     // console.log(newPlayer);
-    console.log("player", newPlayer.name, "ready");
+    //console.log("player", newPlayer.name, "ready");
     newPlayer.socket = socket
     addNewPlayer(game,newPlayer)
 
     // console.log("game", game, game.players.length);
     const readyPlayers = game.players.filter((p)=>p!=undefined)
     if (readyPlayers.length > 1 && !game.started) {
-      console.log("deal...");
+      //console.log("deal...");
       startGame(game)
       dealAllPocketCards(game)
     }

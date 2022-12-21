@@ -31,14 +31,14 @@ function isFullHouse(counts){
 function isThreeOfAKind(counts){
     const sames = Object.values(counts)
     sames.sort((r1,r2)=>r2 - r1)
-    console.log("sames0",sames[0]);
+    //console.log("sames0",sames[0]);
     return sames[0] === 3
 }
 
 function isDoublePair(counts){
     const sames = Object.values(counts)
     sames.sort((r1,r2)=>r2 - r1)
-    console.log("sames0",sames[0]);
+    //console.log("sames0",sames[0]);
     return sames[0] === 2 && sames[1] === 2
 }
 

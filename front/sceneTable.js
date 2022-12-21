@@ -5,8 +5,8 @@ let cardParams = {
     width: 223,
     height: 312,
 
-    opponentScale: 0.3,
-    pocketScale : 0.5
+    opponentScale: 0.33,
+    pocketScale: 0.33
 }
 
 class PokerTable extends Phaser.Scene {
@@ -22,105 +22,127 @@ class PokerTable extends Phaser.Scene {
             'spike': []
         };
         let seats = []
-        seats[1] = { x: 90, y: 300 }
-        seats[2] = { x: 250, y: 250 }
-        seats[3] = { x: 400, y: 200 }
-        seats[4] = { x: 560, y: 200 }
-        seats[5] = { x: 710, y: 250 }
-        seats[6] = { x: 850, y: 300 }
-        
-        seats[7] = { x: 800, y: 450 }
-        seats[8] = { x: 500, y: 550 }
-        seats[9] = { x: 200, y: 450 }
-        this.seats = seats
-        // this.players = {}
+        seats[1] = { x: 150, y: 280, cardsSprites: [] } //rouge
+        seats[2] = { x: 150, y: 440, cardsSprites: [] } //vert
+
+        seats[3] = { x: 240, y: 630, cardsSprites: [] } //noir
+
+        seats[4] = { x: 530, y: 680, cardsSprites: [] } //jaune
+        seats[5] = { x: 690, y: 680, cardsSprites: [] } //violet
+        seats[6] = { x: 850, y: 680, cardsSprites: [] } //rose
+
+        seats[7] = { x: 1120, y: 630, cardsSprites: [] } //bleu foncé
+
+        seats[8] = { x: 1220, y: 440, cardsSprites: [] } //bleu clair
+        seats[9] = { x: 1220, y: 200, cardsSprites: [] } //orange
+
+        this.seats = seats;
+
+
+        let commonCards = [];
+        commonCards[0] = { x: 450, y: 280, cardsSprites: [] };
+        commonCards[1] = { x: 530, y: 280, cardsSprites: [] };
+        commonCards[2] = { x: 610, y: 280, cardsSprites: [] };
+        this.commonCards = commonCards;
+
         this.server = createServer(this)
     }
+
+    cacherBoutons() {
+        this.boutonMiser.x = -100;
+        this.boutonMiser.y = -100;
+        this.boutonSeCoucher.x = -100;
+        this.boutonSeCoucher.y = -100;
+    }
+
+    creerBoutons() {
+        console.log(this);
+        this.boutonMiser = this.add.text(-100, -100, 'Miser', { fontSize: '32px', backgroundColor: '#87cefa', color: '#000' });
+        this.boutonMiser.setInteractive({ useHandCursor: true });
+        this.boutonMiser.on('pointerdown', () => {
+            console.log('mise...');
+            this.server.emit("miser", { seat: this.player.seat, amount: 100 });
+            this.cacherBoutons();
+        });
+        this.boutonSeCoucher = this.add.text(-100, -100, 'Se coucher', { fontSize: '32px', backgroundColor: '#87cefa', color: '#000' });
+        this.boutonSeCoucher.setInteractive({ useHandCursor: true });
+        this.boutonSeCoucher.on('pointerdown', () => {
+            console.log('se coucher...');
+            this.server.emit("secoucher", this.player.seat);
+        });
+
+    }
+
     preload() {
-
-        
-
-
-        // loading the sprite sheet with all cards
         this.load.spritesheet("cards", "./assets/cards.png", {
             frameWidth: cardParams.width,
             frameHeight: cardParams.height
         });
 
-        this.load.image("fond", "./assets/fond.png");
-        this.load.image("table", "./assets/tableV2.png")
+        this.load.image("table", "./assets/table-pokerV3.png");
         this.load.html("nameform", "./assets/nameform.html");
-
     }
+
     create() {
 
-        this.add.image(500,250,"fond")
-        this.add.image(500,250,"table")
+        this.add.image(750, 375, "table")
+        console.log("Table lancée !");
+        this.creerBoutons();
 
-        this.server.emit("listSeats")
 
-
-        // var text = this.add.text(0, 5, 'Please enter your name', { color: 'black', fontSize: '30px '});
-        let element = this.add.dom(500, 250).createFromCache("nameform");
-
+        var text = this.add.text(0, 5, 'Entrer votre pseudo SVP', { color: 'black', fontSize: '30px ' });
+        let element = this.add.dom(750, 375).createFromCache("nameform");
         element.addListener('click');
-
-            element.on('click', function (event) {
-
-                if (event.target.name === 'playButton') {
-                    var inputText = this.getChildByName('nameField');
-                    localStorage.setItem('userName', inputText.value);
-                    console.log(localStorage.getItem('userName'));
-
-                    //  Have they entered anything?
-                    if (inputText.value !== '') {
-                        //  Turn off the click events
-                        this.removeListener('click');
-
-                        //  Hide the login element
-                        this.setVisible(false);
-
-                        //  Populate the text with whatever they typed in
-                        text.setText('Welcome ' + inputText.value);
-                    }
-                    else {
-                        //  Flash the prompt
-                        this.scene.tweens.add({
-                            targets: text,
-                            alpha: 0.2,
-                            duration: 250,
-                            ease: 'Power3',
-                            yoyo: true
-                        });
-                    }
+        element.on('click', function (event) {
+            if (event.target.name === 'playButton') {
+                var inputText = this.getChildByName('nameField');
+                localStorage.setItem('userName', inputText.value);
+                console.log(localStorage.getItem('userName'));
+                //  Have they entered anything?
+                if (inputText.value !== '') {
+                    //  Turn off the click events
+                    this.removeListener('click');
+                    //  Hide the login element
+                    this.setVisible(false);
+                    //  Populate the text with whatever they typed in
+                    text.setText(inputText.value);
                 }
+                else {
+                    //  Flash the prompt
+                    this.scene.tweens.add({
+                        targets: text,
+                        alpha: 0.2,
+                        duration: 250,
+                        ease: 'Power3',
+                        yoyo: true
+                    });
+                };
+            };
+        });
+        this.tweens.add({
+            targets: element,
+            y: 300,
+            duration: 3000,
+            ease: 'Power3'
+        });
 
-            });
-
-            this.tweens.add({
-                targets: element,
-                y: 300,
-                duration: 3000,
-                ease: 'Power3'
-            });
-
-
+        this.server.emit("listSeats");
     }
 
-    createCard(card,scale) {
-
-        let suitIdx = 4,rankIdx = 0 //blue cover idx in spritesheet
-        if(card){
-        suitIdx = this.suits[card.suit]
-        rankIdx = card.rank - 1
+    createCard(card, scale) {
+        let suitIdx = 4, rankIdx = 0 //blue cover idx in spritesheet
+        if (card) {
+            suitIdx = this.suits[card.suit]
+            rankIdx = card.rank - 1
         }
-        
+
         let idx = (suitIdx * 13) + rankIdx
         let sprite = this.add.sprite(- cardParams.width * scale, this.game.config.height / 2, "cards", idx);
 
+        sprite.x = 200;
+        sprite.y = 200;
         sprite.setScale(scale);
         return sprite;
-
     }
 
     dealCard(card, x, y, cb) {
@@ -135,75 +157,99 @@ class PokerTable extends Phaser.Scene {
         });
     }
 
-    dealOpenCards(seat, cards,isPocketCards) {
+    showCards(seat, cards) {
+        let card1 = this.createCard(cards[0], cardParams.opponentScale)
+        let card2 = this.createCard(cards[1], cardParams.opponentScale)
+        let oldCards = this.seats[seat].cardsSprites
+        card1.x = oldCards[0].x
+        card1.y = oldCards[0].y
+        oldCards[0].destroy()
+        oldCards[0] = card1
+        card2.x = oldCards[1].x
+        card2.y = oldCards[1].y
+        oldCards[1].destroy()
+        oldCards[1] = card2
+    }
+
+    dealOpenCards(seat, cards, isPocketCards) {
         let scale = cardParams.opponentScale
-        if(isPocketCards){
+        if (isPocketCards) {
             scale = cardParams.pocketScale
         }
-        let card1 = this.createCard(cards[0],cardParams.pocketScale)
-        card1.x = 0
-        card1.y = 0
-        this.seats[seat].cardsSprites = []
-        console.log(seat,this.seats[seat],this.seats[seat].cardsSprites);
+        let card1 = this.createCard(cards[0], cardParams.pocketScale)
+        // card1.x = 90
+        // card1.y = 860
+        // this.seats[seat].cardsSprites = []
+        console.log(seat, this.seats[seat], this.seats[seat].cardsSprites);
         this.seats[seat].cardsSprites.push(card1)
         this.dealCard(card1, this.seats[seat].x, this.seats[seat].y, () => {
-            console.log("deal seat",seat);
-            let card2 = this.createCard(cards[1],cardParams.pocketScale)
-            card2.x = 0
-            card2.y = 0
+            console.log("deal seat", seat);
+            let card2 = this.createCard(cards[1], cardParams.pocketScale)
+            // card2.x = 860
+            // card2.y = 90
             this.seats[seat].cardsSprites.push(card2)
-            this.dealCard(card2, this.seats[seat].x + (cardParams.width*scale)*1.2, this.seats[seat].y)
+            this.dealCard(card2, this.seats[seat].x + (cardParams.width * scale) * 1.2, this.seats[seat].y)
         })
     }
 
-    dealClosedCards(seat,isPocketCards) {
+    dealClosedCards(seat, isPocketCards) {
         let scale = cardParams.opponentScale
-        if(isPocketCards){
+        if (isPocketCards) {
             scale = cardParams.pocketScale
         }
-        let card1 = this.createCard(null,scale)
-        card1.x = 0
-        card1.y = 0
+        let card1 = this.createCard(null, scale)
+        // card1.x = 860
+        // card1.y = 90
         this.seats[seat].cardsSprites.push(card1)
         this.dealCard(card1, this.seats[seat].x, this.seats[seat].y, () => {
             console.log("deal cover...");
-            let card2 = this.createCard(null,scale)
-            card2.x = 0
-            card2.y = 0
+            let card2 = this.createCard(null, scale)
+            // card2.x = 860
+            // card2.y = 90
             this.seats[seat].cardsSprites.push(card2)
-            this.dealCard(card2, this.seats[seat].x + (cardParams.width*scale), this.seats[seat].y, () => {
+            this.dealCard(card2, this.seats[seat].x + (cardParams.width * scale), this.seats[seat].y, () => {
                 console.log("play...");
             })
         })
     }
 
-    foldCards(seat) {
-        
-        let card1 = this.seats[seat].cardsSprites[0]
-        let card2 = this.seats[seat].cardsSprites[1]
-        this.dealCard(card1, -100, -100,()=>{
-            card1.destroy()
+    dealFlop(flop) {
+        let scale = cardParams.opponentScale
+        let card1 = this.createCard(flop[0], scale)
+        this.flop[0].cardsSprite = card1
+        this.dealCard(card1, this.flop[0].x, this.flop[0].y, () => {
+
+            let card2 = this.createCard(flop[1], scale)
+            this.flop[1].cardsSprite = card2
+            this.dealCard(card2, this.flop[1].x, this.flop[1].y, () => {
+                let card3 = this.createCard(flop[2], scale)
+                this.flop[2].cardsSprite = card3
+                this.dealCard(card3, this.flop[2].x, this.flop[2].y)
+
+            })
         })
-        this.dealCard(card2, -100, -100,()=>{
-            card2.destroy()
-        })
-        this.seats[seat].cardsSprites = null
     }
 
-    addPlayingButtons() {
-        const betButton = this.add.text(350, 680, 'Miser', { fontSize: '50px', backgroundColor: '#ddd', color: '#000' });
-        betButton.setInteractive({ useHandCursor: true });
-        betButton.on('pointerdown', () => {
-            console.log('mise...');
-            this.server.emit("bet", {seat:this.player.seat,amount:100});
-        });
-        const foldButton = this.add.text(550, 680, 'Passer', { fontSize: '50px', backgroundColor: '#ddd', color: '#000' });
-        foldButton.setInteractive({ useHandCursor: true });
-        foldButton.on('pointerdown', () => {
-            console.log('passer...');
-            this.server.emit("fold",this.player.seat);
-        });
+    foldCards(seat) {
+
+        let card1 = this.seats[seat].cardsSprites[0]
+        let card2 = this.seats[seat].cardsSprites[1]
+        this.dealCard(card1, 100, -100, () => {
+            card1.destroy()
+        })
+        this.dealCard(card2, -100, -100, () => {
+            card2.destroy()
+        })
+        this.seats[seat].cardsSprites = []
     }
+
+    afficherBoutons() {
+        this.boutonMiser.x = 1235
+        this.boutonMiser.y = 42;
+        this.boutonSeCoucher.x = 1235;
+        this.boutonSeCoucher.y = 100;
+    }
+
 }
 
 export { PokerTable }

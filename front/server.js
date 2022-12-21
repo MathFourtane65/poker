@@ -17,17 +17,17 @@ function createServer(scene) {
     // })
     
     server.on("listSeats", (freeSeats) => {
-        console.log("list seats",freeSeats);
+        console.log("Liste sieges",freeSeats);
         let name = server.id;
         localStorage.setItem('userId',name)
         if(localStorage.getItem('userId')){
             name = localStorage.getItem('userId')
         }
-        //let userName = localStorage.getItem('userName');       
+        let userName = localStorage.getItem('userName');       
         console.log("userId:",name);
-        let seat = freeSeats[Math.floor(Math.random() * freeSeats.length)]
-        let stack = 1000
-        scene.player = {seat,name,stack};
+        let seat = freeSeats[Math.floor(Math.random() * freeSeats.length)];
+        let stack = 1000;
+        scene.player = {seat,name,stack,userName}
         console.log("player",scene.player);
         server.emit("join", scene.player)
     })
@@ -38,16 +38,24 @@ function createServer(scene) {
         // scene.players[data.name] = data
     })
     server.on("bet", ({ seat, amount }) => {
-        console.log(seat, "bet", amount);
+        console.log(seat, "mise", amount);
     })
     server.on("fold", (seat) => {
         console.log(seat, "fold");
+    });
+    server.on("active", (data) => {
+        scene.afficherBoutons()
     })
+    server.on("unactive", (data) => {
+        scene.cacherBoutons()
+    });
+    server.on("flop", (data) => {
+        scene.dealFlop(data)
+    });
     server.on("deal", (data) => {
         if (data.seat === scene.player.seat) {
             let cards = data.cards
             scene.dealOpenCards(data.seat,data.cards)
-            scene.addPlayingButtons()
         }
         else{
             scene.dealClosedCards(data.seat)
