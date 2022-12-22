@@ -1,5 +1,6 @@
 import { PokerTable } from "./sceneTable.js";
 
+
 window.onload = function () {   
     let config = {
         type: Phaser.AUTO,

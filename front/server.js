@@ -39,12 +39,13 @@ function createServer(scene) {
     })
     server.on("bet", ({ seat, amount }) => {
         console.log(seat, "mise", amount);
+        scene.updateDialogBubbleDealer(seat, amount);
     })
     server.on("secoucher", (seat) => {
         console.log(seat, "se couche");
     });
     server.on("active", (data) => {
-        scene.afficherBoutons()
+        scene.afficherBoutons();
     })
     server.on("unactive", (data) => {
         scene.cacherBoutons()
