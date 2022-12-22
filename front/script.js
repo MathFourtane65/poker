@@ -6,7 +6,7 @@ window.onload = function () {
         type: Phaser.AUTO,
         parent: 'phaser-example',
         width: 1500,
-        height: 750,
+        height: 850,
         //backgroundColor: 0x4488aa,
         dom: {
             createContainer: true

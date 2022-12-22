@@ -49,6 +49,8 @@ class PokerTable extends Phaser.Scene {
         commonCards[2] = { x: 610, y: 280, cardsSprites: [] };
 
         commonCards[3] = { x: 690, y: 280, cardsSprites: [] };
+        commonCards[4] = { x: 690, y: 280, cardsSprites: [] };
+
 
         this.commonCards = commonCards;
 
@@ -369,6 +371,7 @@ class PokerTable extends Phaser.Scene {
                 this.commonCards[2].cardsSprite = card3
                 this.dealCard(card3, this.commonCards[2].x, this.commonCards[2].y)
 
+
             })
         })
     }
@@ -406,6 +409,10 @@ class PokerTable extends Phaser.Scene {
 
             this.add.image(x, y, 'jetonMise');
         }
+    }
+
+    displayPlayerName(username, seat) {
+        this.add.text(this.seats[seat].x, this.seats[seat].y+80, username, { color: 'red', fontSize: '30px ' });
     }
 
 

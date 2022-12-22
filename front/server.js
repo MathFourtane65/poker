@@ -30,12 +30,15 @@ function createServer(scene) {
         scene.player = {seat,name,stack,userName}
         console.log("player",scene.player);
         server.emit("join", scene.player)
+
+
     })
     server.on("join", (player) => {
         console.log("new player:", player);
         player.cardsSprites = []
         scene.seats[player.seat-1] = player
         // scene.players[data.name] = data
+        // scene.displayPlayerName(player.userName, player.seat);
     })
     server.on("bet", ({ seat, amount }) => {
         console.log(seat, "mise", amount);
@@ -55,6 +58,7 @@ function createServer(scene) {
         scene.dealFlop(data)
     });
     server.on("deal", (data) => {
+        scene.displayPlayerName(data.username, data.seat);
         if (data.seat === scene.player.seat) {
             let cards = data.cards
             scene.dealOpenCards(data.seat,data.cards)
