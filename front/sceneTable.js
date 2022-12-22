@@ -47,6 +47,9 @@ class PokerTable extends Phaser.Scene {
         commonCards[0] = { x: 450, y: 280, cardsSprites: [] };
         commonCards[1] = { x: 530, y: 280, cardsSprites: [] };
         commonCards[2] = { x: 610, y: 280, cardsSprites: [] };
+
+        commonCards[3] = { x: 690, y: 280, cardsSprites: [] };
+
         this.commonCards = commonCards;
 
         this.server = createServer(this)
@@ -101,6 +104,8 @@ class PokerTable extends Phaser.Scene {
         this.load.image("jeton", "./assets/groupeJetonsV2.png");
         this.load.image("bulleConsigne", "./assets/bulleConsigne.png");
         this.load.image("bullePseudo", "./assets/bullePseudo.png");
+        this.load.image("jetonMise", "./assets/jetonViolet.png");
+
     }
 
     create() {
@@ -390,9 +395,19 @@ class PokerTable extends Phaser.Scene {
         this.bbb.setVisible(true);
     }
 
-    updateDialogBubbleDealer(siege, montant){
-        this.text.setText("Joueur"+siege+" mise "+montant);
+    updateDialogBubbleDealer(siege, montant) {
+        this.text.setText("Joueur" + siege + " mise " + montant);
     }
+
+    miseJetonTable() {
+        for (var i = 0; i < 1; i++) {
+            var x = Phaser.Math.Between(690, 770);
+            var y = Phaser.Math.Between(165, 215);
+
+            this.add.image(x, y, 'jetonMise');
+        }
+    }
+
 
 
 }

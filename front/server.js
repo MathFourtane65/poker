@@ -40,6 +40,7 @@ function createServer(scene) {
     server.on("bet", ({ seat, amount }) => {
         console.log(seat, "mise", amount);
         scene.updateDialogBubbleDealer(seat, amount);
+        scene.miseJetonTable();
     })
     server.on("secoucher", (seat) => {
         console.log(seat, "se couche");
@@ -75,7 +76,7 @@ function createServer(scene) {
         server.emit("show", scene.player.seat)
     })
     server.on("show", (data) => {
-        scene.showCards(data.seat,data.cards)
+        scene.showCards(data.seat,data.cards);
     })
     return server
 }
