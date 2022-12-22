@@ -62,7 +62,9 @@ class PokerTable extends Phaser.Scene {
         this.boutonMiser.on('pointerdown', () => {
             console.log('mise...');
             this.server.emit("bet", { seat: this.player.seat, amount: 100 });
+            
             this.cacherBoutons();
+            
         });
         this.boutonSeCoucher = this.add.text(-100, -100, 'Se coucher', { fontSize: '32px', backgroundColor: '#87cefa', color: '#000' });
         this.boutonSeCoucher.setInteractive({ useHandCursor: true });
@@ -71,6 +73,15 @@ class PokerTable extends Phaser.Scene {
             this.server.emit("secoucher", this.player.seat);
         });
 
+    }
+    miseJetonTable(){
+        for (var i = 0; i < 1; i++)
+            {
+            var x = Phaser.Math.Between(600, 800);
+            var y = Phaser.Math.Between(165, 235);
+
+            this.add.image(x, y, 'jeton');
+            }
     }
 
     preload() {
@@ -299,6 +310,14 @@ class PokerTable extends Phaser.Scene {
         this.boutonSeCoucher.y = 100;
     }
 
+    MiseJeton() {
+
+        var x = game.rnd.between(100, 770);
+        var y = game.rnd.between(0, 570);
+    
+        Phaser.Image.call(this, x, y, 'jeton',);
+    
+    };
     
 
 }
