@@ -39,7 +39,6 @@ function createServer(scene) {
     })
     server.on("bet", ({ seat, amount }) => {
         console.log(seat, "mise", amount);
-        scene.miseJetonTable();
     })
     server.on("secoucher", (seat) => {
         console.log(seat, "se couche");
