@@ -34,7 +34,7 @@ class PokerTable extends Phaser.Scene {
         seats[7] = { x: 1120, y: 630, cardsSprites: [] } //bleu foncé
 
         seats[8] = { x: 1220, y: 440, cardsSprites: [] } //bleu clair
-        seats[9] = { x: 1220, y: 200, cardsSprites: [] } //orange
+        seats[9] = { x: 1220, y: 280, cardsSprites: [] } //orange
 
         this.seats = seats;
 
@@ -85,14 +85,16 @@ class PokerTable extends Phaser.Scene {
 
     create() {
 
-        this.add.image(750, 375, "table")
+        this.add.image(750, 375, "table");
+
         console.log("Table lancée !");
         this.creerBoutons();
 
 
-        var text = this.add.text(0, 5, 'Entrer votre pseudo SVP', { color: 'black', fontSize: '30px ' });
+        var text = this.add.text(200, 50, 'Entrer votre pseudo SVP', { color: 'black', fontSize: '30px ' });
         let element = this.add.dom(750, 375).createFromCache("nameform");
         element.addListener('click');
+        element.server = this.server;
         element.on('click', function (event) {
             if (event.target.name === 'playButton') {
                 var inputText = this.getChildByName('nameField');
@@ -105,7 +107,9 @@ class PokerTable extends Phaser.Scene {
                     //  Hide the login element
                     this.setVisible(false);
                     //  Populate the text with whatever they typed in
-                    text.setText(inputText.value);
+                    text.setText("Bonjour " +inputText.value);
+                    console.log(element.server);
+                    element.server.emit("listSeats");
                 }
                 else {
                     //  Flash the prompt
@@ -126,7 +130,7 @@ class PokerTable extends Phaser.Scene {
             ease: 'Power3'
         });
 
-        this.server.emit("listSeats");
+       // this.server.emit("listSeats");
     }
 
     createCard(card, scale) {
@@ -249,6 +253,8 @@ class PokerTable extends Phaser.Scene {
         this.boutonSeCoucher.x = 1235;
         this.boutonSeCoucher.y = 100;
     }
+
+    
 
 }
 

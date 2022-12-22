@@ -9,6 +9,7 @@ let seats = [...Array(9)];
 let onConnect = (socket) => {
   console.log("connexion de ", socket.id);
 
+
   socket.on("listSeats", () => {
     let freeSeats = listFreeSeats(seats)
     console.log(freeSeats);
