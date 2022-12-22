@@ -56,7 +56,7 @@ class PokerTable extends Phaser.Scene {
     }
 
     creerBoutons() {
-        console.log(this);
+        //console.log(this);
         this.boutonMiser = this.add.text(-100, -100, 'Miser', { fontSize: '32px', backgroundColor: '#87cefa', color: '#000' });
         this.boutonMiser.setInteractive({ useHandCursor: true });
         this.boutonMiser.on('pointerdown', () => {
@@ -81,20 +81,27 @@ class PokerTable extends Phaser.Scene {
 
         this.load.image("table", "./assets/table-pokerV3.png");
         this.load.html("nameform", "./assets/nameform.html");
+        this.load.image("jeton", "./assets/jetonViolet.png");
+        this.load.image("bulleConsigne", "./assets/bulleConsigne.png");
+        this.load.image("bullePseudo", "./assets/bullePseudo.png");
     }
 
     create() {
 
         this.add.image(750, 375, "table");
+        //this.add.image(425,64,"bulleConsigne");
+        this.add.image(485,64,"bullePseudo");
 
         console.log("Table lancée !");
         this.creerBoutons();
 
 
-        var text = this.add.text(200, 50, 'Entrer votre pseudo SVP', { color: 'black', fontSize: '30px ' });
+        
         let element = this.add.dom(750, 375).createFromCache("nameform");
         element.addListener('click');
         element.server = this.server;
+        element.bulleConsigne = this.add.image(425,64,"bulleConsigne");
+        var text = this.add.text(200, 50, 'Entrer votre pseudo SVP', { color: 'black', fontSize: '30px ' });
         element.on('click', function (event) {
             if (event.target.name === 'playButton') {
                 var inputText = this.getChildByName('nameField');
@@ -107,7 +114,11 @@ class PokerTable extends Phaser.Scene {
                     //  Hide the login element
                     this.setVisible(false);
                     //  Populate the text with whatever they typed in
+                    text.setPosition(310,50);
                     text.setText("Bonjour " +inputText.value);
+                    
+                    console.log(element.bulleConsigne);
+                    element.bulleConsigne.setVisible(false);
                     console.log(element.server);
                     element.server.emit("listSeats");
                 }
@@ -194,6 +205,40 @@ class PokerTable extends Phaser.Scene {
             this.seats[seat].cardsSprites.push(card2)
             this.dealCard(card2, this.seats[seat].x + (cardParams.width * scale) * 1.2, this.seats[seat].y)
         })
+        //faire un if pour chaque siege et mettre les coordonnées à la main 
+        if(this.seats[seat].x === this.seats[1].x && this.seats[seat].y  === this.seats[1].y){
+            this.add.image(310,280, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[2].x && this.seats[seat].y  === this.seats[2].y){
+            this.add.image(310,440, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[3].x && this.seats[seat].y  === this.seats[3].y){
+            this.add.image(380,545, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[4].x && this.seats[seat].y  === this.seats[4].y){
+            this.add.image(570,590, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[5].x && this.seats[seat].y  === this.seats[5].y){
+            this.add.image(740,590, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[6].x && this.seats[seat].y  === this.seats[6].y){
+            this.add.image(900,590, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[7].x && this.seats[seat].y  === this.seats[7].y){
+            this.add.image(1080,550, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[8].x && this.seats[seat].y  === this.seats[8].y){
+            this.add.image(1150,440, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[9].x && this.seats[seat].y  === this.seats[9].y){
+            this.add.image(1150,280, "jeton");
+        }
+
+
+        
+        
+        //this.add.image(this.seats[seat].x,this.seats[seat].y, "jeton");
+
     }
 
     dealClosedCards(seat, isPocketCards) {
