@@ -61,7 +61,7 @@ function dealAllPocketCards(game) {
         broadcast(game, "flop",game.flop);
 
             dealPocketCards(game, player);
-            player.socket.emit("deal", { seat: player.seat, cards: player.cards });
+            player.socket.emit("deal", { seat: player.seat, cards: player.cards, username: player.userName });
             broadcast(game, "deal", { seat: player.seat }, player.seat);
         // }
     }

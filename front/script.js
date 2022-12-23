@@ -1,11 +1,12 @@
 import { PokerTable } from "./sceneTable.js";
 
+
 window.onload = function () {   
     let config = {
         type: Phaser.AUTO,
         parent: 'phaser-example',
         width: 1500,
-        height: 750,
+        height: 850,
         //backgroundColor: 0x4488aa,
         dom: {
             createContainer: true

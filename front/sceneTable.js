@@ -1,3 +1,7 @@
+const COLOR_PRIMARY = 0x4e342e;
+const COLOR_LIGHT = 0x7b5e57;
+const COLOR_DARK = 0x260e04;
+
 import { createServer } from "./server.js";
 
 let cardParams = {
@@ -43,6 +47,11 @@ class PokerTable extends Phaser.Scene {
         commonCards[0] = { x: 450, y: 280, cardsSprites: [] };
         commonCards[1] = { x: 530, y: 280, cardsSprites: [] };
         commonCards[2] = { x: 610, y: 280, cardsSprites: [] };
+
+        commonCards[3] = { x: 690, y: 280, cardsSprites: [] };
+        commonCards[4] = { x: 690, y: 280, cardsSprites: [] };
+
+
         this.commonCards = commonCards;
 
         this.server = createServer(this)
@@ -53,6 +62,8 @@ class PokerTable extends Phaser.Scene {
         this.boutonMiser.y = -100;
         this.boutonSeCoucher.x = -100;
         this.boutonSeCoucher.y = -100;
+        this.print0.setVisible(false);
+        this.bbb.setVisible(false);
     }
 
     creerBoutons() {
@@ -61,8 +72,8 @@ class PokerTable extends Phaser.Scene {
         this.boutonMiser.setInteractive({ useHandCursor: true });
         this.boutonMiser.on('pointerdown', () => {
             console.log('mise...');
-            this.server.emit("bet", { seat: this.player.seat, amount: 100 });
-            
+            this.server.emit("bet", { seat: this.player.seat, amount: Number(this.print0.text) });
+            this.updateDialogBubbleDealer(this.player.seat, Number(this.print0.text))
             this.cacherBoutons();
             
         });
@@ -73,18 +84,19 @@ class PokerTable extends Phaser.Scene {
             this.server.emit("secoucher", this.player.seat);
         });
 
-    }
-    miseJetonTable(){
-        for (var i = 0; i < 1; i++)
-            {
-            var x = Phaser.Math.Between(600, 800);
-            var y = Phaser.Math.Between(165, 235);
 
-            this.add.image(x, y, 'jeton');
-            }
+
+
+
     }
 
     preload() {
+        this.load.scenePlugin({
+            key: 'rexuiplugin',
+            url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+            sceneKey: 'rexUI'
+        });
+
         this.load.spritesheet("cards", "./assets/cards.png", {
             frameWidth: cardParams.width,
             frameHeight: cardParams.height
@@ -92,27 +104,69 @@ class PokerTable extends Phaser.Scene {
 
         this.load.image("table", "./assets/table-pokerV3.png");
         this.load.html("nameform", "./assets/nameform.html");
-        this.load.image("jeton", "./assets/jetonViolet.png");
+        this.load.image("jeton", "./assets/groupeJetonsV2.png");
         this.load.image("bulleConsigne", "./assets/bulleConsigne.png");
         this.load.image("bullePseudo", "./assets/bullePseudo.png");
+        this.load.image("jetonMise", "./assets/jetonViolet.png");
+
     }
 
     create() {
 
         this.add.image(750, 375, "table");
         //this.add.image(425,64,"bulleConsigne");
-        this.add.image(485,64,"bullePseudo");
+        this.add.image(485, 64, "bullePseudo");
 
         console.log("Table lancée !");
         this.creerBoutons();
 
+        var minSlider = 0;
+        var maxSlider = 1000;
+        var rangeSlider = maxSlider - minSlider;
+        var gapSlider = 10;
 
-        
+        let aaa = this.print0 = this.add.text(1345, 40, '', { color: 'black', fontSize: '30px ' });
+        this.bbb = this.rexUI.add.slider({
+            x: 1335,
+            y: 90,
+            width: 200,
+            height: 20,
+            orientation: 'x',
+
+
+            track: this.rexUI.add.roundRectangle(0, 0, 0, 0, 6, COLOR_DARK),
+            thumb: this.rexUI.add.roundRectangle(0, 0, 0, 0, 10, COLOR_LIGHT),
+
+
+            valuechangeCallback: function (value) {
+                value = (value * rangeSlider) + minSlider
+                aaa.text = value;
+            },
+            gap: gapSlider / rangeSlider,
+            space: {
+                top: 4,
+                bottom: 4
+            },
+            input: 'drag', // 'drag'|'click'
+        })
+            .layout()
+
+        this.print0.text = aaa.text;
+
+
+
+        this.print0.setVisible(false);
+        this.bbb.setVisible(false);
+
+
+
         let element = this.add.dom(750, 375).createFromCache("nameform");
         element.addListener('click');
         element.server = this.server;
-        element.bulleConsigne = this.add.image(425,64,"bulleConsigne");
-        var text = this.add.text(200, 50, 'Entrer votre pseudo SVP', { color: 'black', fontSize: '30px ' });
+        element.bulleConsigne = this.add.image(425, 64, "bulleConsigne");
+        //this.bulleConsigne = element.bulleConsigne;
+        this.text = this.add.text(200, 50, 'Entrer votre pseudo SVP', { color: 'black', fontSize: '30px ' });
+        var text = this.text;
         element.on('click', function (event) {
             if (event.target.name === 'playButton') {
                 var inputText = this.getChildByName('nameField');
@@ -125,9 +179,9 @@ class PokerTable extends Phaser.Scene {
                     //  Hide the login element
                     this.setVisible(false);
                     //  Populate the text with whatever they typed in
-                    text.setPosition(310,50);
-                    text.setText("Bonjour " +inputText.value);
-                    
+                    text.setPosition(310, 50);
+                    text.setText("Bonjour " + inputText.value);
+
                     console.log(element.bulleConsigne);
                     element.bulleConsigne.setVisible(false);
                     console.log(element.server);
@@ -152,7 +206,9 @@ class PokerTable extends Phaser.Scene {
             ease: 'Power3'
         });
 
-       // this.server.emit("listSeats");
+
+
+        // this.server.emit("listSeats");
     }
 
     createCard(card, scale) {
@@ -216,39 +272,39 @@ class PokerTable extends Phaser.Scene {
             this.seats[seat].cardsSprites.push(card2)
             this.dealCard(card2, this.seats[seat].x + (cardParams.width * scale) * 1.2, this.seats[seat].y)
         })
-        //faire un if pour chaque siege et mettre les coordonnées à la main 
-        if(this.seats[seat].x === this.seats[1].x && this.seats[seat].y  === this.seats[1].y){
-            this.add.image(310,280, "jeton");
+
+        //affichage des jetons aux sieges 
+        if (this.seats[seat].x === this.seats[1].x && this.seats[seat].y === this.seats[1].y) {
+            this.add.image(310, 280, "jeton");
         }
-        else if (this.seats[seat].x === this.seats[2].x && this.seats[seat].y  === this.seats[2].y){
-            this.add.image(310,440, "jeton");
+        else if (this.seats[seat].x === this.seats[2].x && this.seats[seat].y === this.seats[2].y) {
+            this.add.image(310, 440, "jeton");
         }
-        else if (this.seats[seat].x === this.seats[3].x && this.seats[seat].y  === this.seats[3].y){
-            this.add.image(380,545, "jeton");
+        else if (this.seats[seat].x === this.seats[3].x && this.seats[seat].y === this.seats[3].y) {
+            this.add.image(380, 545, "jeton");
         }
-        else if (this.seats[seat].x === this.seats[4].x && this.seats[seat].y  === this.seats[4].y){
-            this.add.image(570,590, "jeton");
+        else if (this.seats[seat].x === this.seats[4].x && this.seats[seat].y === this.seats[4].y) {
+            this.add.image(570, 590, "jeton");
         }
-        else if (this.seats[seat].x === this.seats[5].x && this.seats[seat].y  === this.seats[5].y){
-            this.add.image(740,590, "jeton");
+        else if (this.seats[seat].x === this.seats[5].x && this.seats[seat].y === this.seats[5].y) {
+            this.add.image(740, 590, "jeton");
         }
-        else if (this.seats[seat].x === this.seats[6].x && this.seats[seat].y  === this.seats[6].y){
-            this.add.image(900,590, "jeton");
+        else if (this.seats[seat].x === this.seats[6].x && this.seats[seat].y === this.seats[6].y) {
+            this.add.image(900, 590, "jeton");
         }
-        else if (this.seats[seat].x === this.seats[7].x && this.seats[seat].y  === this.seats[7].y){
-            this.add.image(1080,550, "jeton");
+        else if (this.seats[seat].x === this.seats[7].x && this.seats[seat].y === this.seats[7].y) {
+            this.add.image(1080, 550, "jeton");
         }
-        else if (this.seats[seat].x === this.seats[8].x && this.seats[seat].y  === this.seats[8].y){
-            this.add.image(1150,440, "jeton");
+        else if (this.seats[seat].x === this.seats[8].x && this.seats[seat].y === this.seats[8].y) {
+            this.add.image(1150, 440, "jeton");
         }
-        else if (this.seats[seat].x === this.seats[9].x && this.seats[seat].y  === this.seats[9].y){
-            this.add.image(1150,280, "jeton");
+        else if (this.seats[seat].x === this.seats[9].x && this.seats[seat].y === this.seats[9].y) {
+            this.add.image(1150, 280, "jeton");
         }
 
 
-        
-        
-        //this.add.image(this.seats[seat].x,this.seats[seat].y, "jeton");
+
+
 
     }
 
@@ -271,6 +327,36 @@ class PokerTable extends Phaser.Scene {
                 console.log("play...");
             })
         })
+
+        //affichage des jetons aux sieges 
+        if (this.seats[seat].x === this.seats[1].x && this.seats[seat].y === this.seats[1].y) {
+            this.add.image(310, 280, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[2].x && this.seats[seat].y === this.seats[2].y) {
+            this.add.image(310, 440, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[3].x && this.seats[seat].y === this.seats[3].y) {
+            this.add.image(380, 545, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[4].x && this.seats[seat].y === this.seats[4].y) {
+            this.add.image(570, 590, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[5].x && this.seats[seat].y === this.seats[5].y) {
+            this.add.image(740, 590, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[6].x && this.seats[seat].y === this.seats[6].y) {
+            this.add.image(900, 590, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[7].x && this.seats[seat].y === this.seats[7].y) {
+            this.add.image(1080, 550, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[8].x && this.seats[seat].y === this.seats[8].y) {
+            this.add.image(1150, 440, "jeton");
+        }
+        else if (this.seats[seat].x === this.seats[9].x && this.seats[seat].y === this.seats[9].y) {
+            this.add.image(1150, 280, "jeton");
+        }
+
     }
 
     dealFlop(flop) {
@@ -285,6 +371,7 @@ class PokerTable extends Phaser.Scene {
                 let card3 = this.createCard(flop[2], scale)
                 this.commonCards[2].cardsSprite = card3
                 this.dealCard(card3, this.commonCards[2].x, this.commonCards[2].y)
+
 
             })
         })
@@ -307,18 +394,29 @@ class PokerTable extends Phaser.Scene {
         this.boutonMiser.x = 1235
         this.boutonMiser.y = 42;
         this.boutonSeCoucher.x = 1235;
-        this.boutonSeCoucher.y = 100;
+        this.boutonSeCoucher.y = 150;
+        this.print0.setVisible(true);
+        this.bbb.setVisible(true);
     }
 
-    MiseJeton() {
+    updateDialogBubbleDealer(siege, montant) {
+        this.text.setText("Joueur" + siege + " mise " + montant);
+    }
 
-        var x = game.rnd.between(100, 770);
-        var y = game.rnd.between(0, 570);
-    
-        Phaser.Image.call(this, x, y, 'jeton',);
-    
-    };
-    
+    miseJetonTable() {
+        for (var i = 0; i < 1; i++) {
+            var x = Phaser.Math.Between(690, 770);
+            var y = Phaser.Math.Between(165, 215);
+
+            this.add.image(x, y, 'jetonMise');
+        }
+    }
+
+    displayPlayerName(username, seat) {
+        this.add.text(this.seats[seat].x, this.seats[seat].y+80, username, { color: 'red', fontSize: '30px ' });
+    }
+
+
 
 }
 

@@ -30,22 +30,26 @@ function createServer(scene) {
         scene.player = {seat,name,stack,userName}
         console.log("player",scene.player);
         server.emit("join", scene.player)
+
+
     })
     server.on("join", (player) => {
         console.log("new player:", player);
         player.cardsSprites = []
         scene.seats[player.seat-1] = player
         // scene.players[data.name] = data
+        // scene.displayPlayerName(player.userName, player.seat);
     })
     server.on("bet", ({ seat, amount }) => {
         console.log(seat, "mise", amount);
+        scene.updateDialogBubbleDealer(seat, amount);
         scene.miseJetonTable();
     })
     server.on("secoucher", (seat) => {
         console.log(seat, "se couche");
     });
     server.on("active", (data) => {
-        scene.afficherBoutons()
+        scene.afficherBoutons();
     })
     server.on("unactive", (data) => {
         scene.cacherBoutons()
@@ -54,6 +58,7 @@ function createServer(scene) {
         scene.dealFlop(data)
     });
     server.on("deal", (data) => {
+        scene.displayPlayerName(data.username, data.seat);
         if (data.seat === scene.player.seat) {
             let cards = data.cards
             scene.dealOpenCards(data.seat,data.cards)
@@ -75,7 +80,7 @@ function createServer(scene) {
         server.emit("show", scene.player.seat)
     })
     server.on("show", (data) => {
-        scene.showCards(data.seat,data.cards)
+        scene.showCards(data.seat,data.cards);
     })
     return server
 }
