@@ -109,6 +109,9 @@ class PokerTable extends Phaser.Scene {
         this.load.image("bullePseudo", "./assets/bullePseudo.png");
         this.load.image("jetonMise", "./assets/jetonViolet.png");
         this.load.audio("sonsJetons", "./assets/son_jetons.mp3");
+        this.load.audio("endgame", "./assets/endgame.mp3");
+        this.load.audio("sonFlop", "./assets/son_flop.mp3");
+        this.load.audio("sonCarteTable", "./assets/son_card_table.mp3");
 
     }
 
@@ -361,6 +364,7 @@ class PokerTable extends Phaser.Scene {
     }
 
     dealFlop(flop) {
+        this.sound.play("sonFlop");
         let scale = cardParams.opponentScale
         let card1 = this.createCard(flop[0], scale)
         this.commonCards[0].cardsSprite = card1
@@ -379,6 +383,7 @@ class PokerTable extends Phaser.Scene {
     }
 
     dealCardTurn(cardTurn){
+        this.sound.play("sonCarteTable");
         let scale = cardParams.opponentScale;
         let card4 = this.createCard(cardTurn[0], scale);
         this.commonCards[3].cardsSprites = card4;
@@ -386,6 +391,7 @@ class PokerTable extends Phaser.Scene {
     }
 
     dealCardRiver(cardRiver){
+        this.sound.play("sonCarteTable");
         let scale = cardParams.opponentScale;
         let card5 = this.createCard(cardRiver[0], scale);
         this.commonCards[4].cardsSprites = card5;
@@ -450,7 +456,8 @@ class PokerTable extends Phaser.Scene {
     }
 
     updateDialogBubbleDealerGameOver(){
-        this.text.setText("Partie terminée.",);
+        this.text.setText("Partie terminée.");
+        this.sound.play("endgame");
     }
 
     updateDialogBubbleDealerSeCoucher(seat){
