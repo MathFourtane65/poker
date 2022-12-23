@@ -1,7 +1,7 @@
 import { buildDeck } from "./cards.js";
 
 function createGame(players) {
-    return { started: false, players, deck: buildDeck(), currentPlayer: null, dealer: null }
+    return { started: false, players, deck: buildDeck(), currentPlayer: null, dealer: null, round:0 }
 }
 
 function getNextPlayer(game) {
@@ -77,6 +77,21 @@ function dealFlop(game) {
     game.flop = flop;
 }
 
+function dealCardTurn(game) {
+    let cardTurn = [game.deck.pop()];
+    game.cardTurn = cardTurn;
+}
+
+function dealCardRiver(game){
+    let cardRiver = [game.deck.pop()];
+    game.cardRiver = cardRiver;
+}
+
+function seCoucher(game){
+    game.currentPlayer.emit("secoucher", game.currentPlayer.seat);
+    console.log(game.currentPlayer);    
+}
+
 
 function broadcast(game, event, data, exceptSeat) {
     for (let player of game.players) {
@@ -95,4 +110,4 @@ function roundIsOver(game) {
 }
 
 
-export { createGame, listFreeSeats, removePlayer, updateStack, startGame, broadcast, dealAllPocketCards, getNextPlayer, roundIsOver }
+export { createGame, listFreeSeats, removePlayer, updateStack, startGame, broadcast, dealAllPocketCards, getNextPlayer, roundIsOver, dealCardTurn, dealCardRiver, seCoucher}

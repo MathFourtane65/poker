@@ -7,7 +7,7 @@ window.onload = function () {
         parent: 'phaser-example',
         width: 1500,
         height: 850,
-        //backgroundColor: 0x4488aa,
+        backgroundColor: 0xFFE8CE,
         dom: {
             createContainer: true
         },

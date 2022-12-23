@@ -1,4 +1,4 @@
-import { broadcast, createGame, dealAllPocketCards, getNextPlayer, listFreeSeats, removePlayer, roundIsOver, startGame, updateStack } from "./jeuActions.js";
+import { broadcast, createGame, dealAllPocketCards, getNextPlayer, listFreeSeats, removePlayer, roundIsOver, startGame, updateStack, dealCardTurn, dealCardRiver, seCoucher } from "./jeuActions.js";
 import { makeHand } from "./handMaker.js";
 import { findBestHand, compareHands } from "./handsComparator.js";
 
@@ -28,7 +28,7 @@ let onConnect = (socket) => {
     const readyPlayers = seats.filter((s) => s != undefined)
     console.log("JOUEURS PRETS : ", readyPlayers.length);
     // demarrage partie si il y a au moins 2 joueurs
-    if (readyPlayers.length > 1 ) {
+    if (readyPlayers.length > 1) {
       if (!game || !game.started) {
         console.log("deal...");
         game = createGame(readyPlayers)
@@ -38,7 +38,7 @@ let onConnect = (socket) => {
       }
     }
   })
-  
+
   socket.on("bet", ({ seat, amount }) => {
     console.log(game.currentPlayer.name);
     if (seat != game.currentPlayer.seat) {
@@ -52,40 +52,86 @@ let onConnect = (socket) => {
     socket.emit("unactive")
     broadcast(game, "bet", { seat, amount, stack: game.currentPlayer.stack, bet: game.currentPlayer.bet })
     // game.currentPlayer.bet += amount
-    if (roundIsOver(game)) {
-      console.log("find winner");
-      broadcast(game,"game-over")
-      game.pot = 0
-      for (let player of game.players) {
+    // game.round1 = 0;
+    console.log(("GAME.ROUND ="+game.round));
+    
+    //GAME.ROUND=0
+    if (roundIsOver(game) && game.round===0) {
+      game.round+=1;
+      game.pot=0;
+      //console.log("find winner");
+      console.log("ROUND 1 FLOP FINI !");
+      dealCardTurn(game);
+      broadcast(game, "cardTurn", game.cardTurn);
+      game.currentPlayer.socket.emit("active");
+      return;
+      // game.round1+=1;
+      // game.pot = 0;
+    }
+    //GAME.ROUND=1
 
-        player.hand = makeHand([...player.cards, ...game.flop])
-        console.log("hand", player.hand);
-        game.pot += player.bet
-        player.bet = 0
-      }
-      let bestHand = findBestHand(game.players.map((p) => p.hand))
-      console.log("best",bestHand);
-      let winners = game.players.filter((p)=>compareHands(p.hand,bestHand)===0)
-      console.log("winners", winners);
-      for (let winner of winners) {
-        winner.stack += game.pot/winners.length
-      }
-      broadcast(game, "winners", winners.map((w) => { return { hand:w.hand,seat: w.seat, prize: game.pot / winners.length, stack: w.stack } }))
+    if (roundIsOver(game) && game.round===1) {
+      game.pot=0;
+      game.round+=1;
+      dealCardRiver(game);
+      broadcast(game, "cardRiver", game.cardRiver);      
+      console.log("ROUND 2 TURN FINI !");
+      game.currentPlayer.socket.emit("active");
+      return;
+    }
+    //GAME.ROUND=2
+
+    if(roundIsOver(game) && game.round===2){
+      broadcast(game, "unactive");
+      broadcast(game,"game-over");
+      game.currentPlayer.socket.emit("unactive");
+      //game.players.socket.emit("unactive");
       return
     }
+    // if (roundIsOver(game) && game.cardTurn!=0) {
+    //   //console.log("find winner");
+    //   dealCardRiver(game);
+    //   broadcast(game, "cardRiver", game.cardRiver);
+    //   // game.round1+=1;
+    //   // game.pot = 0;
+    // }
+    //broadcast(game,"game-over")
+    // game.pot = 0
+    // for (let player of game.players) {
+
+    //   player.hand = makeHand([...player.cards, ...game.flop])
+    //   console.log("hand", player.hand);
+    //   game.pot += player.bet
+    //   player.bet = 0
+    // }
+    // let bestHand = findBestHand(game.players.map((p) => p.hand))
+    // console.log("best",bestHand);
+    // let winners = game.players.filter((p)=>compareHands(p.hand,bestHand)===0)
+    // console.log("winners", winners);
+    // for (let winner of winners) {
+    //   winner.stack += game.pot/winners.length
+    // }
+    // broadcast(game, "winners", winners.map((w) => { return { hand:w.hand,seat: w.seat, prize: game.pot / winners.length, stack: w.stack } }))
+    // return
+    // if (game.round1 !=0 && game.pot ===0) {
+    //   dealCardRiver(game);
+    //   broadcast(game, "cardRiver", game.cardRiver);
+    // }
     game.currentPlayer = getNextPlayer(game)
     console.log(game.currentPlayer.name);
     game.currentPlayer.socket.emit("active")
 
   })
   socket.on("show", (seat) => {
-    console.log("show!",seat);
-    broadcast(game, "show",{seat,cards:socket.player.cards}, seat)
+    console.log("show!", seat);
+    broadcast(game, "show", { seat, cards: socket.player.cards }, seat)
   })
-  socket.on("fold", (seat) => {
-    console.log("player", seat, "fold");
-    removePlayer(game, seat)
-    broadcast(game, "fold", seat)
+  socket.on("secoucher", (seat) => {
+    console.log("player", seat, "se couche");
+    removePlayer(game, seat);
+    broadcast(game, "secoucher", seat);
+    broadcast(game,"game-over");
   })
+
 }
 export { onConnect }

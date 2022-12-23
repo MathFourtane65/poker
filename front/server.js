@@ -55,7 +55,8 @@ function createServer(scene) {
         scene.cacherBoutons()
     });
     server.on("flop", (data) => {
-        scene.dealFlop(data)
+        scene.dealFlop(data);
+        scene.updateDialogBubbleDealerFlop();
     });
     server.on("deal", (data) => {
         scene.displayPlayerName(data.username, data.seat);
@@ -66,6 +67,7 @@ function createServer(scene) {
         else{
             scene.dealClosedCards(data.seat)
         }
+
     })
     server.on("winners", (data) => {
         console.log("winners", data);
@@ -77,11 +79,28 @@ function createServer(scene) {
         }
     })
     server.on("game-over", (data) => {
-        server.emit("show", scene.player.seat)
+        server.emit("show", scene.player.seat);
+        scene.cacherBoutons();
+        scene.updateDialogBubbleDealerGameOver();
     })
     server.on("show", (data) => {
         scene.showCards(data.seat,data.cards);
     })
+
+    server.on("cardTurn", (data => {
+        //console.log("TURN CARD !!!");
+        //console.log(data);
+        scene.updateDialogBuubleDealerTurnCard()
+        scene.dealCardTurn(data);
+    }))
+
+    server.on("cardRiver", (data) => {
+        //console.log("RIVER CARD !!!!");
+        //console.log(data);
+        scene.updateDialogBuubleDealerRiverCard();
+        scene.dealCardRiver(data);
+    })
+
     return server
 }
 
