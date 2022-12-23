@@ -453,7 +453,6 @@ class PokerTable extends Phaser.Scene {
 
     updateDialogBubbleDealerGameOver(){
         this.text.setText("Partie terminée.",);
-        this.sound.play("endgame");
     }
 
     updateDialogBubbleDealerSeCoucher(seat){
