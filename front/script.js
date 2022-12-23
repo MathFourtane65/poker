@@ -11,6 +11,9 @@ window.onload = function () {
         dom: {
             createContainer: true
         },
+        audio: {
+            disableWebAudio: true
+        },
         // Sets game scaling
         // scale: {
         //     // Fit to window

@@ -71,6 +71,7 @@ class PokerTable extends Phaser.Scene {
         this.boutonMiser = this.add.text(-100, -100, 'Miser', { fontSize: '32px', backgroundColor: '#87cefa', color: '#000' });
         this.boutonMiser.setInteractive({ useHandCursor: true });
         this.boutonMiser.on('pointerdown', () => {
+            this.sound.play("sonsJetons");
             console.log('mise...');
             this.server.emit("bet", { seat: this.player.seat, amount: Number(this.print0.text) });
             this.updateDialogBubbleDealer(this.player.seat, Number(this.print0.text))
@@ -107,6 +108,7 @@ class PokerTable extends Phaser.Scene {
         this.load.image("bulleConsigne", "./assets/bulleConsigne.png");
         this.load.image("bullePseudo", "./assets/bullePseudo.png");
         this.load.image("jetonMise", "./assets/jetonViolet.png");
+        this.load.audio("sonsJetons", "./assets/son_jetons.mp3");
 
     }
 
