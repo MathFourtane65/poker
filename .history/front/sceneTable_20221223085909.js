@@ -72,8 +72,8 @@ class PokerTable extends Phaser.Scene {
         this.boutonMiser.setInteractive({ useHandCursor: true });
         this.boutonMiser.on('pointerdown', () => {
             console.log('mise...');
-            this.server.emit("bet", { seat: this.player.seat, amount: Number(this.print0.text), username: this.player.username });
-            this.updateDialogBubbleDealer(this.player.seat, Number(this.print0.text), this.player.username)
+            this.server.emit("bet", { seat: this.player.seat, amount: Number(this.print0.text) });
+            this.updateDialogBubbleDealer(this.player.seat, Number(this.print0.text))
             this.cacherBoutons();
             
         });
@@ -399,9 +399,9 @@ class PokerTable extends Phaser.Scene {
         this.bbb.setVisible(true);
     }
 
-    updateDialogBubbleDealer(siege, montant) {
-       this.text.setText("Joueur " + siege + " mise " + montant);
-    }
+    //updateDialogBubbleDealer(username,siege, montant) {
+    //    this.text.setText(username + siege + " mise " + montant);
+    //}
 
     miseJetonTable() {
         for (var i = 0; i < 1; i++) {
@@ -414,6 +414,10 @@ class PokerTable extends Phaser.Scene {
 
     displayPlayerName(username, seat) {
         this.add.text(this.seats[seat].x, this.seats[seat].y+80, username, { color: 'red', fontSize: '30px ' });
+    }
+
+    updateDialogBubbleDealer(username,siege, montant) {
+        this.text.setText(username + siege + " mise " + montant);
     }
 
 }
