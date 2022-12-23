@@ -49,7 +49,7 @@ class PokerTable extends Phaser.Scene {
         commonCards[2] = { x: 610, y: 280, cardsSprites: [] };
 
         commonCards[3] = { x: 690, y: 280, cardsSprites: [] };
-        commonCards[4] = { x: 690, y: 280, cardsSprites: [] };
+        commonCards[4] = { x: 770, y: 280, cardsSprites: [] };
 
 
         this.commonCards = commonCards;
@@ -71,6 +71,7 @@ class PokerTable extends Phaser.Scene {
         this.boutonMiser = this.add.text(-100, -100, 'Miser', { fontSize: '32px', backgroundColor: '#87cefa', color: '#000' });
         this.boutonMiser.setInteractive({ useHandCursor: true });
         this.boutonMiser.on('pointerdown', () => {
+            this.sound.play("sonsJetons");
             console.log('mise...');
             this.server.emit("bet", { seat: this.player.seat, amount: Number(this.print0.text), username: this.player.username });
             this.updateDialogBubbleDealer(this.player.seat, Number(this.print0.text), this.player.username)
@@ -108,6 +109,7 @@ class PokerTable extends Phaser.Scene {
         this.load.image("bulleConsigne", "./assets/bulleConsigne.png");
         this.load.image("bullePseudo", "./assets/bullePseudo.png");
         this.load.image("jetonMise", "./assets/jetonViolet.png");
+        this.load.audio("sonsJetons", "./assets/son_jetons.mp3");
 
     }
 
@@ -377,6 +379,20 @@ class PokerTable extends Phaser.Scene {
         })
     }
 
+    dealCardTurn(cardTurn){
+        let scale = cardParams.opponentScale;
+        let card4 = this.createCard(cardTurn[0], scale);
+        this.commonCards[3].cardsSprites = card4;
+        this.dealCard(card4, this.commonCards[3].x, this.commonCards[3].y);
+    }
+
+    dealCardRiver(cardRiver){
+        let scale = cardParams.opponentScale;
+        let card5 = this.createCard(cardRiver[0], scale);
+        this.commonCards[4].cardsSprites = card5;
+        this.dealCard(card5, this.commonCards[4].x, this.commonCards[4].y);
+    }
+
     foldCards(seat) {
 
         let card1 = this.seats[seat].cardsSprites[0]
@@ -413,7 +429,33 @@ class PokerTable extends Phaser.Scene {
     }
 
     displayPlayerName(username, seat) {
-        this.add.text(this.seats[seat].x, this.seats[seat].y+80, username, { color: 'red', fontSize: '30px ' });
+        let u = this.add.text(this.seats[seat].x, this.seats[seat].y + 80, username);
+        u.setStyle({
+            fontSize: '30px',
+            fontFamily: 'Arial',
+            color: 'black',
+            fontWeight: 'bold',
+        });
+    }
+
+    updateDialogBuubleDealerTurnCard(){
+        this.text.setText("The Turn");
+    }
+
+    updateDialogBuubleDealerRiverCard(){
+        this.text.setText("The River");
+    }
+
+    updateDialogBubbleDealerFlop(){
+        this.text.setText("Voilà le Flop !");
+    }
+
+    updateDialogBubbleDealerGameOver(){
+        this.text.setText("Partie terminée.",);
+    }
+
+    updateDialogBubbleDealerSeCoucher(seat){
+        this.text.setText("Le joueur",seat," s'est couchée ");
     }
 
 }
