@@ -21,6 +21,7 @@ forces['straightflush'] = 9
  *       1 : h1 is stronger than h2
  */
 function compareHands(h1, h2) {
+    
    
     //TODO
     return 1
