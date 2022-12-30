@@ -36,6 +36,22 @@ function makeHand(origCards) {
     hand.kickers = others;
   }
 
+  if (isQuad(counts)) {
+    hand.type = "carre";
+    let tmp = Object.entries(counts).filter(([val, count]) => count === 4);
+    hand.rank = parseInt(tmp[0][0]);
+    hand.kickers = [];
+  }
+
+  if (isFullHouse(counts)) {
+    hand.type = "full";
+    let tmp = Object.entries(counts).filter(([val, count]) => count === 3);
+    hand.rank = parseInt(tmp[0][0]);
+    let others = cardsByRank.filter((c) => c.rank !== hand.rank);
+    hand.kickers = others;
+  }
+
+
   return hand;
 }
 

@@ -1,3 +1,5 @@
+//TEST DE LA FONCTION QUI VERIFIE SI C'EST UN BRELAN AVEC LES 5 CARTES
+
 import { expect } from "chai";
 import { buildDeck } from "../cards.js";
 import { makeHand } from "../handMaker.js";
@@ -10,7 +12,7 @@ function getCard(deck, rank, suit) {
 
 
 describe('Brelan', () => {
-    it('gestion d un brelan sur 5 cartes (main + flop)', () => {
+    it('gestion d un brelan sur 5 cartes', () => {
         const deck = buildDeck();
         const cards = [];
         cards.push(getCard(deck, 10, 'diamond'));

@@ -1,5 +1,3 @@
-//TEST DE LA FONCTION QUI VERIFIE SI C'EST UNE DOUBLE PAIRE AVEC LES 5 CARTES
-
 import { expect } from "chai";
 import { buildDeck } from "../cards.js";
 import { makeHand } from "../handMaker.js";
@@ -10,26 +8,24 @@ function getCard(deck, rank, suit) {
     return card
 }
 
-describe('Double paire', () => {
-    it('gestion d une double paire sur 5 cartes', () => {
+describe('Carré', () => {
+    it('gestion d un carré sur 5 cartes', () => {
         const deck = buildDeck();
         const cards = [];
         cards.push(getCard(deck, 10, 'diamond'));
         cards.push(getCard(deck, 9, 'diamond'));
         cards.push(getCard(deck, 10, 'club'));
-        cards.push(getCard(deck, 2, 'diamond'));
-        cards.push(getCard(deck, 2, 'spade'));
+        cards.push(getCard(deck, 10, 'heart'));
+        cards.push(getCard(deck, 10, 'spade'));
 
         expect(cards).to.be.a('Array');
         expect(cards.length).to.equal(5);
 
         const main = makeHand(cards);
 
-        expect(main.type).to.equal('doublepair');
+        expect(main.type).to.equal('carre');
         expect(main.rank).to.equal(10);
         expect(main.kickers).to.be.a('Array');
-        expect(main.kickers.length).to.be.equal(1);
-        expect(main.kickers[0].rank).to.equal(9);
-
+        expect(main.kickers.length).to.be.equal(0);
     })
 })

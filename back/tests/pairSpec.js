@@ -1,3 +1,5 @@
+//TEST DE LA FONCTION QUI VERIFIE SI C'EST UNE PAIRE AVEC LES 5 CARTES
+
 import { expect } from "chai";
 import { buildDeck } from "../cards.js";
 import { makeHand } from "../handMaker.js";
@@ -9,7 +11,7 @@ function getCard(deck, rank, suit) {
 }
 
 describe('Paire', () => {
-    it('gestion d une paire sur 5 cartes (main + flop)', () => {
+    it('gestion d une paire sur 5 cartes', () => {
         const deck = buildDeck();
         const cards = [];
         cards.push(getCard(deck, 10, 'diamond'));

@@ -1,4 +1,4 @@
-import { broadcast, createGame, dealAllPocketCards, getNextPlayer, listFreeSeats, removePlayer, roundIsOver, startGame, updateStack, dealCardTurn, dealCardRiver, seCoucher } from "./jeuActions.js";
+import { broadcast, createGame, dealAllPocketCards, getNextPlayer, listFreeSeats, removePlayer, roundIsOver, startGame, updateStack, dealCardTurn, dealCardRiver, seCoucher, resetGame } from "./jeuActions.js";
 import { makeHand } from "./handMaker.js";
 import { findBestHand, compareHands } from "./handsComparator.js";
 
@@ -31,7 +31,10 @@ let onConnect = (socket) => {
     if (readyPlayers.length > 1) {
       if (!game || !game.started) {
         console.log("deal...");
-        game = createGame(readyPlayers)
+
+        //redémarrage d'une partie
+        resetGame(game);
+        game = createGame(readyPlayers);
         startGame(game)
         dealAllPocketCards(game)
         game.currentPlayer.socket.emit("active")

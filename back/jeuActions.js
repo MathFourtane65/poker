@@ -109,5 +109,26 @@ function roundIsOver(game) {
     return bets.every((b) => b === max)
 }
 
+function resetGame(game) {
+    game.started = false;
+    game.currentPlayer = null;
+    game.dealer = null;
+    game.round = 0;
+    game.flop = [];
+    game.cardTurn = [];
+    game.cardRiver = [];
+    game.pot = 0;
+    game.lastBet = 0;
+    game.highestBet = 0;
+    game.minRaise = 0;
+    game.lastRaiser = null;
+    game.players.forEach((player) => {
+      player.cards = [];
+      player.bet = 0;
+      player.folded = false;
+    });
+    game.deck = buildDeck();
+  }
 
-export { createGame, listFreeSeats, removePlayer, updateStack, startGame, broadcast, dealAllPocketCards, getNextPlayer, roundIsOver, dealCardTurn, dealCardRiver, seCoucher}
+
+export { createGame, listFreeSeats, removePlayer, updateStack, startGame, broadcast, dealAllPocketCards, getNextPlayer, roundIsOver, dealCardTurn, dealCardRiver, seCoucher, resetGame}
