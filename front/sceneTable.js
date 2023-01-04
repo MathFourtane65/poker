@@ -186,7 +186,7 @@ class PokerTable extends Phaser.Scene {
                     //  Populate the text with whatever they typed in
                     text.setPosition(310, 50);
                     text.setText("Bonjour " + inputText.value);
-
+                    //
                     console.log(element.bulleConsigne);
                     element.bulleConsigne.setVisible(false);
                     console.log(element.server);
@@ -198,6 +198,7 @@ class PokerTable extends Phaser.Scene {
                         targets: text,
                         alpha: 0.2,
                         duration: 250,
+       
                         ease: 'Power3',
                         yoyo: true
                     });
