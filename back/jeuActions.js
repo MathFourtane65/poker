@@ -109,26 +109,36 @@ function roundIsOver(game) {
     return bets.every((b) => b === max)
 }
 
+
 function resetGame(game) {
-    game.started = false;
+    console.log("reset game...");
+    // Réinitialise les propriétés de la partie
     game.currentPlayer = null;
     game.dealer = null;
     game.round = 0;
-    game.flop = [];
-    game.cardTurn = [];
-    game.cardRiver = [];
+    game.cardTurn = null;
+    game.cardRiver = null;
     game.pot = 0;
-    game.lastBet = 0;
-    game.highestBet = 0;
-    game.minRaise = 0;
-    game.lastRaiser = null;
+    
+    // Réinitialise les propriétés de chaque joueur
     game.players.forEach((player) => {
-      player.cards = [];
       player.bet = 0;
-      player.folded = false;
+      player.hand = [];
+      player.inHand = true;
     });
+    
+    // Remélange le paquet de cartes
     game.deck = buildDeck();
-  }
 
+
+    //détruit le flop
+    game.flop= [];
+    
+    // Distribue les cartes de poche aux joueurs
+    dealAllPocketCards(game);
+    
+    // Définit le joueur actif et lance la partie
+    startGame(game);
+  }
 
 export { createGame, listFreeSeats, removePlayer, updateStack, startGame, broadcast, dealAllPocketCards, getNextPlayer, roundIsOver, dealCardTurn, dealCardRiver, seCoucher, resetGame}

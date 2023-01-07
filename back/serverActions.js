@@ -9,6 +9,14 @@ let seats = [...Array(9)];
 let onConnect = (socket) => {
   console.log("connexion de ", socket.id);
 
+  socket.on("reset", () => {
+    // Vérifie que la partie existe et qu'elle a déjà été lancée
+    if (game && game.started) {
+      console.log("relance de la partie en cours");
+      resetGame(game);
+    }
+  });
+
 
   socket.on("listSeats", () => {
     let freeSeats = listFreeSeats(seats)
@@ -33,7 +41,7 @@ let onConnect = (socket) => {
         console.log("deal...");
 
         //redémarrage d'une partie
-        resetGame(game);
+        //resetGame(game);
         game = createGame(readyPlayers);
         startGame(game)
         dealAllPocketCards(game)

@@ -4,6 +4,11 @@ function createServer(scene) {
 
     let server = io("localhost:3000");
 
+    server.on("reset", (data) => {
+        scene.remove();
+        scene.cacherBoutonRestart();
+    })
+
     // console.log("create");
 
     // server.on("connect", () => {
