@@ -24,19 +24,19 @@ class PokerTable extends Phaser.Scene {
       spike: [],
     };
     let seats = [];
-    seats[1] = { x: 150, y: 280, cardsSprites: [] }; //rouge
-    seats[2] = { x: 150, y: 440, cardsSprites: [] }; //vert
+    seats[1] = { x: 150, y: 280, cardsSprites: [], seatName: "" }; //rouge
+    seats[2] = { x: 150, y: 440, cardsSprites: [], seatName: "" }; //vert
 
-    seats[3] = { x: 240, y: 630, cardsSprites: [] }; //noir
+    seats[3] = { x: 240, y: 630, cardsSprites: [], seatName: "" }; //noir
 
-    seats[4] = { x: 530, y: 680, cardsSprites: [] }; //jaune
-    seats[5] = { x: 690, y: 680, cardsSprites: [] }; //violet
-    seats[6] = { x: 850, y: 680, cardsSprites: [] }; //rose
+    seats[4] = { x: 530, y: 680, cardsSprites: [], seatName: "" }; //jaune
+    seats[5] = { x: 690, y: 680, cardsSprites: [], seatName: "" }; //violet
+    seats[6] = { x: 850, y: 680, cardsSprites: [], seatName: "" }; //rose
 
-    seats[7] = { x: 1120, y: 630, cardsSprites: [] }; //bleu foncé
+    seats[7] = { x: 1120, y: 630, cardsSprites: [], seatName: "" }; //bleu foncé
 
-    seats[8] = { x: 1220, y: 440, cardsSprites: [] }; //bleu clair
-    seats[9] = { x: 1220, y: 280, cardsSprites: [] }; //orange
+    seats[8] = { x: 1220, y: 440, cardsSprites: [], seatName: "" }; //bleu clair
+    seats[9] = { x: 1220, y: 280, cardsSprites: [], seatName: "" }; //orange
 
     this.seats = seats;
 
@@ -308,46 +308,91 @@ class PokerTable extends Phaser.Scene {
       this.seats[seat].y === this.seats[1].y
     ) {
       this.add.image(310, 280, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     } else if (
       this.seats[seat].x === this.seats[2].x &&
       this.seats[seat].y === this.seats[2].y
     ) {
       this.add.image(310, 440, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     } else if (
       this.seats[seat].x === this.seats[3].x &&
       this.seats[seat].y === this.seats[3].y
     ) {
       this.add.image(380, 545, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     } else if (
       this.seats[seat].x === this.seats[4].x &&
       this.seats[seat].y === this.seats[4].y
     ) {
       this.add.image(570, 590, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     } else if (
       this.seats[seat].x === this.seats[5].x &&
       this.seats[seat].y === this.seats[5].y
     ) {
       this.add.image(740, 590, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     } else if (
       this.seats[seat].x === this.seats[6].x &&
       this.seats[seat].y === this.seats[6].y
     ) {
       this.add.image(900, 590, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     } else if (
       this.seats[seat].x === this.seats[7].x &&
       this.seats[seat].y === this.seats[7].y
     ) {
       this.add.image(1080, 550, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     } else if (
       this.seats[seat].x === this.seats[8].x &&
       this.seats[seat].y === this.seats[8].y
     ) {
       this.add.image(1150, 440, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     } else if (
       this.seats[seat].x === this.seats[9].x &&
       this.seats[seat].y === this.seats[9].y
     ) {
       this.add.image(1150, 280, "jeton");
+      this.add.text(
+        this.seats[seat].x,
+        this.seats[seat].y + 80,
+        seat.player.userName
+      );
     }
   }
 
@@ -531,8 +576,11 @@ class PokerTable extends Phaser.Scene {
   }
 
   remove() {
-    this.seats.destroy();
-    this.commonCards.destroy();
+    this.commonCards[0].destroy();
+    this.commonCards[1].destroy();
+    this.commonCards[2].destroy();
+    this.commonCards[3].destroy();
+    this.commonCards[4].destroy();
   }
 }
 

@@ -99,17 +99,9 @@ let onConnect = (socket) => {
       //game.players.socket.emit("unactive");
       return
     }
-    // if (roundIsOver(game) && game.cardTurn!=0) {
-    //   //console.log("find winner");
-    //   dealCardRiver(game);
-    //   broadcast(game, "cardRiver", game.cardRiver);
-    //   // game.round1+=1;
-    //   // game.pot = 0;
-    // }
     //broadcast(game,"game-over")
     // game.pot = 0
     // for (let player of game.players) {
-
     //   player.hand = makeHand([...player.cards, ...game.flop])
     //   console.log("hand", player.hand);
     //   game.pot += player.bet
